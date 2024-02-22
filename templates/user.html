@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Login Page</title>
+        <title>User Page</title>
     </head>
     <body>
-        <h1>Welcome to Login page</h1>
+        <h1>Welcome to User page, {{user}}</h1>
 
         {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -15,11 +15,6 @@
 
         {% endwith %}
         <br>
-        <p>Enter your name</p>
-
-        <form action="#" method="post">
-            <input type="text" name="usr_name" />
-            <input type="submit" value="Submit" />
-        </form>
+      
     </body>
 </html>
