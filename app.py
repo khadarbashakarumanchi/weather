@@ -1,45 +1,26 @@
-from flask import Flask, redirect, url_for , render_template, request , session
-from datetime import timedelta 
-from flask import flash
+#WTF Forms 
 
+from flask import Flask, render_template
+from flask_wtf import FlaskForm  # Import FlaskForm instead of Form
+from wtforms import StringField, SubmitField
 
 app = Flask(__name__)
-app.secret_key = "nerchuko"
-app.permanent_session_lifetime = timedelta(minutes=5)
+app.config["SECRET_KEY"] = "goodmorning"  # Use = for assignment
 
-@app.route("/")
-def home():
-    return render_template("home.html")   
+class ContactForm(FlaskForm):  # Use FlaskForm
+    name = StringField("What is your name?")
+    submit = SubmitField("Submit")
 
-@app.route("/login" , methods = ["POST" , "GET"])
-def login():
-    if request.method == 'POST':
-        session.permanent = True
-        user = request.form['usr_name']
-        session['user'] = user 
-        flash("Login Successful !!") 
-        return redirect(url_for("user" )) 
-    else:
-        if "user" in session:
-            flash("You are already logged in !!") 
-            return redirect(url_for("user"))
-        return render_template("login.html")
+@app.route("/", methods=["GET", "POST"])
+def index():
+    contact = ContactForm()
+    name = None  # Use None instead of False for uninitialized variables
 
+    if contact.validate_on_submit():
+        name = contact.name.data
+        contact.name.data = ""  # Reset the form field if needed
 
-@app.route('/user')
-def user():
-    if 'user' in session:
-        user = session['user'] 
-        return render_template("user.html" , user = user) 
-    else: 
-        flash("you are not logged in!")
-        return redirect(url_for("login"))
+    return render_template("index.html", contact=contact, name=name)
 
-@app.route("/logout")
-def logout():
-    session.pop("user" , None)
-    flash("You have been logged out!" , 'info') 
-    return redirect(url_for("login"))
- 
-if __name__ == '__main__':
-    app.run(debug = True)
+if __name__ == "__main__":
+    app.run(debug=True)
